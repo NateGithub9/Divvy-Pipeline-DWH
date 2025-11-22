@@ -23,9 +23,12 @@ Specifically, the resulting governed dataset enables the following critical insi
 Divvy Bike Trip Dataset:
 https://divvy-tripdata.s3.amazonaws.com/index.html
 
+![](https://drive.usercontent.google.com/download?id=1_ZRTKA5qzwS2J8x00IE-6dvHiElz91NS)
+
 Chicago Weather Database:
 https://www.kaggle.com/datasets/curiel/chicago-weather-database?resource=download
 
+![](https://drive.usercontent.google.com/download?id=1HCdgrv2u41cHW91jeEPo2VB508jlNGvO)
 
 ### Conceptual Design (ERD Design)
 
@@ -67,7 +70,7 @@ Container:
 
 * **Azure Databricks Workspace:** The core engine for the entire data warehouse architecture.
 
-
+![](https://drive.usercontent.google.com/download?id=1yinHR8nzULdh88pmGLs2kuAMfv-wHK5-)
 
 ## 3. Data warehouse 
 ### 1. Bronze Ingestion: Raw Data Acquisition 
@@ -75,15 +78,21 @@ Container:
 The Bronze layer ingests the core data assets from Azure Blob Storage.
 
 * **Decompression Stage:** Compressed ZIP archives of divvy-tripdata were programmatically decompressed via 
-a Python notebook (see "Decompression.ipynb"), and the extracted data was transferred to the Divvy container (blob storage) for further  processing. 
+a Python notebook (see "Decompression.ipynb"), and the extracted data was transferred to the Divvy container (blob storage) for further  processing.
+
+![](https://drive.usercontent.google.com/download?id=1IiKgzLbItCV1Wh4K9dtm5R9tfntdisNn)
 
 * **Divvy trip data:** The raw divvy-tripdata was ingested and named "bronze_trip_data". This data was 
 sourced as a CSV, requiring the use of DLT's Auto Loader feature to efficiently handle the file format, schema inference, and incremental loading.
 *For more details, see "01 - Ingestion.ipynb"* 
 
+![](https://drive.usercontent.google.com/download?id=13Aa-5n5TebyyPkmIce9GSCfkfLHjQII7)
+
 * **Chicago Weather Data:** The complementary dataset containing daily and hourly weather metrics was also ingested to 
 support later correlation analysis. This process, named "bronze_weather_data," 
-*For more details, see "01 - Ingestion.ipynb"* 
+*For more details, see "01 - Ingestion.ipynb"*
+
+![](https://drive.usercontent.google.com/download?id=1VCFNg714BmmWvkmgEUhYUyHtiAAYhOrK)
 
 ### 2. Table Creation
 #### Dimensions tables creation
@@ -103,6 +112,8 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 * Created FACT_trip table: The central fact_trip table acts as the core transactional repository. The loading process resolves Foreign Keys by joining trip records against the Rider, Station, and Weather dimensions. It further populates quantitative metrics (Duration, Distance) and temporal keys (Date and Hour) to enable detailed slicing by time and magnitude.
 
 *For more details, see "02 - Creation.ipynb" & "04 - Insertion.ipynb"* 
+
+![](https://drive.usercontent.google.com/download?id=1x_CshzJZLmRZZjASHnDSbsGJohk0c1YN)
 
 ### 3. Silver Transformation: Trip data
 * Dropped records that contained schema drift or corruption, diverting them to the _rescued_data column and prioritizing data quality.
