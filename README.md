@@ -129,6 +129,7 @@ existing stations have their names or coordinates updated (overwritten) if chang
 * Created DIM Rider: 
 The dim_rider table serves as a reference for equipment types. The process extracts distinct rideable_type values 
 from the silver_trip_data to ensure all bike variations are accounted for in the analytical layer.
+
 * Created DIM Weather: To facilitate categorical analysis, the dim_weather process transforms continuous weather metrics into discrete buckets. A temporary staging view applies business logic to classify Temperature, Humidity, Precipitation, and Wind Speed into both text-based categories (e.g., "Freezing", "Light Rain") and binary integer codes for efficient sorting and querying.
 
 *For more details, see "02 - Creation.ipynb" & "04 - Insertion.ipynb"* 
@@ -149,9 +150,6 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 
 ![](https://drive.usercontent.google.com/download?id=1ll3uOLac53ej0TRKJSo0LzWE2fPmEFFb)
 
-*For more details, see "03 - Transformation.ipynb"*
-### 5. Silver Transformation: Weather data
-
 * "Trip_Duration_Min" (DOUBLE) was calculated using TIMESTAMPDIFF, including a check to ensure end_ts was greater than start_ts.
 
 * "Trip_Distance_Km" (DOUBLE) was calculated by implementing the Haversine Formula with native SQL math functions (ASIN, SQRT), assuming the Earth's radius of 6371 km.
@@ -159,6 +157,13 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 * "Full_Date" (DATE) was extracted from the start timestamp to serve as the Foreign Key to the DIM_Date table.
 
 * A final filter was implemented in the WHERE clause, excluding invalid records where Trip_Distance_Km was less than or equal to 0.05 or Trip_Duration_Min was NULL.
+
+*For more details, see "03 - Transformation.ipynb"*
+
+
+### 5. Silver Transformation: Weather data
+
+![](https://drive.usercontent.google.com/download?id=11DDJY16w98A2xWluLo37h1OFsahc1iN22)
 
 *For more details, see "03 - Transformation.ipynb"*
 
