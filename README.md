@@ -163,7 +163,7 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 
 ### 5. Silver Transformation: Weather data
 
-![](https://drive.usercontent.google.com/download?id=11DDJY16w98A2xWluLo37h1OFsahc1iN22)
+![](https://drive.usercontent.google.com/download?id=1DDJY16w98A2xWluLo37h1OFsahc1iN22)
 
 *For more details, see "03 - Transformation.ipynb"*
 
