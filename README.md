@@ -32,9 +32,9 @@ https://www.kaggle.com/datasets/curiel/chicago-weather-database?resource=downloa
 
 ### Conceptual Design (ERD Design)
 
-The conceptual data model was initially drafted using **Looping** (https://www.looping-mcd.fr/) software. 
+The conceptual data model was initially drafted using **Looping** software (https://www.looping-mcd.fr/). 
 This crucial first step established the core entities (e.g., Trip, Rider, Station, Date, Weather) 
-and their relationships without concern for the final database platform (Da). This approach ensured alignment with
+and their relationships without concern for the final database platform in Azure Databricks. This approach ensured alignment with
 the stakeholders and analysts on what the data means before moving to implementation.
 
 ### Dimensional Modeling Approach
@@ -43,9 +43,9 @@ The logical and physical models, built using a Dimensional Modeling paradigm wit
 reporting performance. This model, which originated from the 2022-2023 Divvy Tripdata and Chicago weather dataset, 
 comprises a central Fact Table and several surrounding Dimension Tables:
 
-* Fact Table (Fact_Trip): Stores granular, atomic trip records, linking all dimensions and capturing key performance
+* **Fact Table (Fact_Trip):** Stores granular, atomic trip records, linking all dimensions and capturing key performance
 measures such as Trip Duration and Distance.
-* Dimension Tables (DIM_Date_day, DIM_Date_hour, DIM_Station, DIM_Rider, DIM_Weather): Contain descriptive attributes 
+* **Dimension Tables (DIM_Date_day, DIM_Date_hour, DIM_Station, DIM_Rider, DIM_Weather):** Contain descriptive attributes 
 essential for filtering, grouping, and drilling down into the data. This structure ensures data consistency and reduces 
 redundancy.
 
@@ -82,7 +82,7 @@ Container:
 This project utilizes Databricks Git folders, linked to GitHub, to provide robust version control and seamless collaboration. This configuration ensures that all development adheres to best practices for CI/CD and production deployment.
 
 * **Primary Branch:** "main": Represents the stable, production-ready code.
-* **Development Branches:** "dev": Branch reated from main and merged back via pull requests after review and testing.
+* **Development Branches:** "dev": Branch created from main and merged back via pull requests after review and testing.
 
 ![](https://drive.usercontent.google.com/download?id=1HR5nCOiJU0JhF2bGundPXCjNQeIyN7CC)
 
@@ -90,7 +90,17 @@ commit and push example:
 
 ![](https://drive.usercontent.google.com/download?id=1e9dapleZQgrYczKg0W50IRiDs57ycjS3)
 
-### 2. Bronze Ingestion: Raw Data Acquisition 
+### 2. Medaillon architecture 
+
+To ensure data quality, consistency, and traceability, this project implements the Medallion Architecture. This is a data design pattern used within a Data Lakehouse to logically organize data through three progressive layers of quality and structure.
+
+![](https://drive.usercontent.google.com/download?id=15YcsMjOTpg9Msn6kI4u-0Oli9OfmLJ2D)
+
+* **Bronze Layer (Raw Ingestion):** This serves as the landing zone. It stores the Divvy trip logs and weather data in their native format (CSV), exactly as they appear in the source system. No transformations are applied here, ensuring we always have a pristine record of the original state.
+* **Silver Layer (Validated & Enriched):** This represents the "source of truth." In this layer, raw data is cleaned and transformed.
+* **Gold Layer (Curated Business-level):** This is the consumption layer. Data is organized into the Star Schema (Fact and Dimensions) modeled earlier. It is optimized for performance, ready for reporting in Power BI, and aggregated for specific business use cases.
+
+### 3. Bronze Ingestion: Raw Data Acquisition 
 
 The Bronze layer ingests the core data assets from Azure Blob Storage.
 
@@ -111,7 +121,7 @@ support later correlation analysis. This process, named "bronze_weather_data,"
 
 ![](https://drive.usercontent.google.com/download?id=1VCFNg714BmmWvkmgEUhYUyHtiAAYhOrK)
 
-### 3. Table Creation
+### 4. Table Creation
 #### Dimensions tables creation
 * Created two time type dimensions: "DIM_day_date" & "DIM_day_hour"
 
@@ -132,6 +142,8 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 
 * Created DIM Weather: To facilitate categorical analysis, the dim_weather process transforms continuous weather metrics into discrete buckets. A temporary staging view applies business logic to classify Temperature, Humidity, Precipitation, and Wind Speed into both text-based categories (e.g., "Freezing", "Light Rain") and binary integer codes for efficient sorting and querying.
 
+![](https://drive.usercontent.google.com/download?id=1DDJY16w98A2xWluLo37h1OFsahc1iN22)
+
 *For more details, see "02 - Creation.ipynb" & "04 - Insertion.ipynb"* 
 
 #### Fact table creation
@@ -141,12 +153,12 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 
 ![](https://drive.usercontent.google.com/download?id=1x_CshzJZLmRZZjASHnDSbsGJohk0c1YN)
 
-### 4. Silver Transformation: Trip data
+### 5. Silver Transformation: Trip data
 * Dropped records that contained schema drift or corruption, diverting them to the _rescued_data column and prioritizing data quality.
 
 * Cast the raw "started_at" and "ended_at" STRING columns to the TIMESTAMP data type, naming them "trip_start_ts" and "trip_end_ts".
 
-* Applied COALESCE to replace NULL station IDs/names with standardized values ('N/A', 'UNKNOWN'), preparing the data for DIM table joins.
+* Applied COALESCE to replace NULL station IDs/names with standardized values ('N/A'), preparing the data for DIM table joins.
 
 ![](https://drive.usercontent.google.com/download?id=1ll3uOLac53ej0TRKJSo0LzWE2fPmEFFb)
 
@@ -158,10 +170,20 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 
 * A final filter was implemented in the WHERE clause, excluding invalid records where Trip_Distance_Km was less than or equal to 0.05 or Trip_Duration_Min was NULL.
 
+* Standardized geolocation data by performing a secondary UPDATE to round start/end latitude and longitude to 2 decimal places.
+* Enforced entity integrity by defining "ride_id" as the Primary Key (Not Enforced).
+
 *For more details, see "03 - Transformation.ipynb"*
 
 
-### 5. Silver Transformation: Weather data
+### 6. Silver Transformation: Weather data
+
+* Constructed the "weather_ts" column by concatenating and casting separate Year, Month, Day, and Hour columns into a unified TIMESTAMP format.
+* Generated a composite Primary Key ("silver_weather_data_pk") based on the time components to ensure record uniqueness.
+* Standardized weather metrics (Temperature, Precipitation, Humidity, Wind Speed, Pressure) by casting them to DOUBLE precision.
+* Created a "Date_Key" (INT) derived from the date components to serve as a Foreign Key for the DIM_Date table.
+* Filtered out low-quality records containing schema drift (_rescued_data) or NULL values in critical fields like Year or Temperature.
+* Applied a final constraint to set "silver_weather_data_pk" as the Primary Key (Not Enforced).
 
 ![](https://drive.usercontent.google.com/download?id=1DDJY16w98A2xWluLo37h1OFsahc1iN22)
 
@@ -202,7 +224,7 @@ A multi-task Job was configured with linear dependencies to ensure data integrit
 * *Trigger:* The job was set to run on a scheduled trigger (e.g., daily or weekly) to mimic a batch processing environment suitable for reporting requirements.
 * *Notifications:* Email alerts are configured to notify the Data Engineering team in case of job failure or timeout.
 
-## 5. Final Deliverable 
+## 5. Gold Layer: Final Deliverable 
 
 The fully governed, high-performance scalable Data Warehouse hosted on Databricks is ready for connection with BI tools like Power BI.
 
