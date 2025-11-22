@@ -51,6 +51,10 @@ redundancy.
 
 ![](https://drive.usercontent.google.com/download?id=1L2BQhCGOgCMRx4oGlWqgJBolwrgTIo2H)
 
+Plan in Databricks:
+
+![](https://drive.usercontent.google.com/download?id=1B_N_iRBa7xlF_bI4KOgnPA3miwrU7mH5)
+
 ## 2. Azure Services Provisioning
 
 The foundation of the project required provisioning the core cloud resources within Microsoft Azure and 
