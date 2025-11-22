@@ -123,6 +123,9 @@ support later correlation analysis. This process, named "bronze_weather_data,"
 The dim_station table is maintained using a Slowly Changing Dimension (Type 1) strategy. A staging process first
 aggregates all unique Start and End stations from the trip data. This dataset is then merged into the target dimension: 
 existing stations have their names or coordinates updated (overwritten) if changes are detected, while entirely new stations are inserted.
+
+![](https://drive.usercontent.google.com/download?id=1HYwZATdaBfWuNDE3Z2cVLVl9nBtqKrTD)
+
 * Created DIM Rider: 
 The dim_rider table serves as a reference for equipment types. The process extracts distinct rideable_type values 
 from the silver_trip_data to ensure all bike variations are accounted for in the analytical layer.
@@ -143,6 +146,8 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 * Cast the raw "started_at" and "ended_at" STRING columns to the TIMESTAMP data type, naming them "trip_start_ts" and "trip_end_ts".
 
 * Applied COALESCE to replace NULL station IDs/names with standardized values ('N/A', 'UNKNOWN'), preparing the data for DIM table joins.
+
+![](https://drive.usercontent.google.com/download?id=1ll3uOLac53ej0TRKJSo0LzWE2fPmEFFb)
 
 *For more details, see "03 - Transformation.ipynb"*
 ### 5. Silver Transformation: Weather data
