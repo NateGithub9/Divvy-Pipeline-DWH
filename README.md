@@ -76,8 +76,21 @@ Container:
 
 ![](https://drive.usercontent.google.com/download?id=1yinHR8nzULdh88pmGLs2kuAMfv-wHK5-)
 
-## 3. Data warehouse 
-### 1. Bronze Ingestion: Raw Data Acquisition 
+## 3. Data warehouse
+### 1. Version control with Git
+
+This project utilizes Databricks Git folders, linked to GitHub, to provide robust version control and seamless collaboration. This configuration ensures that all development adheres to best practices for CI/CD and production deployment.
+
+* **Primary Branch:** "main": Represents the stable, production-ready code.
+* **Development Branches:** "dev": Branch reated from main and merged back via pull requests after review and testing.
+
+![](https://drive.usercontent.google.com/download?id=1HR5nCOiJU0JhF2bGundPXCjNQeIyN7CC)
+
+commit and push example:
+
+![](https://drive.usercontent.google.com/download?id=1e9dapleZQgrYczKg0W50IRiDs57ycjS3)
+
+### 2. Bronze Ingestion: Raw Data Acquisition 
 
 The Bronze layer ingests the core data assets from Azure Blob Storage.
 
@@ -98,7 +111,7 @@ support later correlation analysis. This process, named "bronze_weather_data,"
 
 ![](https://drive.usercontent.google.com/download?id=1VCFNg714BmmWvkmgEUhYUyHtiAAYhOrK)
 
-### 2. Table Creation
+### 3. Table Creation
 #### Dimensions tables creation
 * Created two time type dimensions: "DIM_day_date" & "DIM_day_hour"
 
@@ -124,7 +137,7 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 
 ![](https://drive.usercontent.google.com/download?id=1x_CshzJZLmRZZjASHnDSbsGJohk0c1YN)
 
-### 3. Silver Transformation: Trip data
+### 4. Silver Transformation: Trip data
 * Dropped records that contained schema drift or corruption, diverting them to the _rescued_data column and prioritizing data quality.
 
 * Cast the raw "started_at" and "ended_at" STRING columns to the TIMESTAMP data type, naming them "trip_start_ts" and "trip_end_ts".
@@ -132,7 +145,7 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 * Applied COALESCE to replace NULL station IDs/names with standardized values ('N/A', 'UNKNOWN'), preparing the data for DIM table joins.
 
 *For more details, see "03 - Transformation.ipynb"*
-### 4. Silver Transformation: Weather data
+### 5. Silver Transformation: Weather data
 
 * "Trip_Duration_Min" (DOUBLE) was calculated using TIMESTAMPDIFF, including a check to ensure end_ts was greater than start_ts.
 
@@ -144,7 +157,7 @@ from the silver_trip_data to ensure all bike variations are accounted for in the
 
 *For more details, see "03 - Transformation.ipynb"*
 
-### 5. Fact Table data insertion
+### 6. Fact Table data insertion
 
 The fact_trip table is populated through a segmented process that first resolves dimensional relationships by joining 
 trip records against the Rider, Station, and Weather tables to generate the necessary surrogate keys. 
