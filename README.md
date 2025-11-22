@@ -214,4 +214,7 @@ The fully governed, high-performance scalable Data Warehouse hosted on Databrick
 
 This project provided the opportunity to implement a robust and scalable cloud-native data engineering solution from scratch. It allowed me to practically apply the theoretical knowledge acquired during my training and validate skills aligned with my Azure and Databricks certifications.
 
-Thank you for reading, and if you have any questions please reach out: `nathaniel.akingbade@gmail.com`
+Thank you for reading, and if you have any questions please reach out!
+
+email: `nathaniel.akingbade@gmail.com`
+Linkedin: `https://www.linkedin.com/in/nathaniel-akingbade/`
