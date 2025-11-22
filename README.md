@@ -22,6 +22,7 @@ Specifically, the resulting governed dataset enables the following critical insi
 
 Divvy Bike Trip Dataset:
 https://divvy-tripdata.s3.amazonaws.com/index.html
+
 Chicago Weather Database:
 https://www.kaggle.com/datasets/curiel/chicago-weather-database?resource=download
 
@@ -45,7 +46,7 @@ measures such as Trip Duration and Distance.
 essential for filtering, grouping, and drilling down into the data. This structure ensures data consistency and reduces 
 redundancy.
 
-![](https://drive.usercontent.google.com/download?id=1r10ehTDroab7K5oUSeA7iuPY3vpO1Sp8)
+![](https://drive.usercontent.google.com/download?id=1L2BQhCGOgCMRx4oGlWqgJBolwrgTIo2H)
 
 ## 2. Azure Services Provisioning
 
@@ -57,7 +58,16 @@ The following essential resources were provisioned in Azure to host the Data Lak
 * **Resource Group:** A dedicated resource group was created to logically organize and manage all related services, simplifying governance and cost tracking.
 * **Azure Blob Storage Account with dedicated container**: Provisioned to serve as the Source Data landing zone. This storage account provides a durable and scalable, hierarchically-named 
 location for the raw, compressed Divvy trip data and the Chicago weather data.
+
+Blob storage:
+![](https://drive.usercontent.google.com/download?id=1bRKcvChYHRpV85T6p3gCB9uJpEkQyNhU)
+
+Container:
+![](https://drive.usercontent.google.com/download?id=1Rrob0_nBgg7Nmy7bjxZdo7Np239Drk_E)
+
 * **Azure Databricks Workspace:** The core engine for the entire data warehouse architecture.
+
+
 
 ## 3. Data warehouse 
 ### 1. Bronze Ingestion: Raw Data Acquisition 
