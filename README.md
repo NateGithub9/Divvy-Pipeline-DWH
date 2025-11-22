@@ -97,6 +97,11 @@ support later correlation analysis. This process, named "bronze_weather_data,"
 ### 2. Table Creation
 #### Dimensions tables creation
 * Created two time type dimensions: "DIM_day_date" & "DIM_day_hour"
+
+![](https://drive.usercontent.google.com/download?id=1NLiQNhFoNnKLfc8AuPl5RewOmjZG3ojr)
+
+![](https://drive.usercontent.google.com/download?id=1Fn_OJfTw4Shp-0QSgml9UCH1MoJyo3Po)
+  
 * Created DIM Station:
 The dim_station table is maintained using a Slowly Changing Dimension (Type 1) strategy. A staging process first
 aggregates all unique Start and End stations from the trip data. This dataset is then merged into the target dimension: 
